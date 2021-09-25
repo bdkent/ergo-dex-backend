@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  ergo_node:
+    image: ergoplatform/ergo:v4.0.13
+    ports:
+      - 9030:9030
+      - 127.0.0.1:9053:9053
+    volumes:
+      - /workspaces/ergo-dex-backend/deploy/ergo_node:/home/ergo/.ergo
+      - /workspaces/ergo-dex-backend/deploy/myergo.conf:/etc/myergo.conf
+      - /workspaces/ergo-dex-backend/deploy/logback.xml:/etc/logback.xml
+    environment:
+      - _JAVA_OPTIONS=-Dlogback.configurationFile=/etc/logback.xml -DMAX_HEAP=3G
+    command: --mainnet -c /etc/myergo.conf 
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+  
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    
+  redis:
+    image: "redis:alpine"
+
+    command: redis-server --bind 0.0.0.0 #--requirepass sOmE_sEcUrE_pAsS
+
+    ports:
+     - "6379:6379"
+
+    # volumes:
+    # - $PWD/redis-data:/var/lib/redis
+    # - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+
+    environment:
+     - REDIS_REPLICATION_MODE=master
+
+
+

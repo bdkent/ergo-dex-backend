@@ -13,13 +13,13 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/var/log/dex-backend/pool-resolver.log</file>
+        <file>/workspaces/ergo-dex-backend/log/dex-backend/pool-resolver.log</file>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="tofu.logging.ELKLayout"/>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/dex-backend/pool-resolver.%d{yyyy-MM-dd}.%i.log
+            <fileNamePattern>/workspaces/ergo-dex-backend/log/dex-backend/pool-resolver.%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
