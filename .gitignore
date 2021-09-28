@@ -17,3 +17,4 @@ project/metals.sbt
 
 deploy/rocks
 deploy/ergo_node
+appy/rocks
