@@ -3,7 +3,7 @@ services:
   pool_resolver:
     image: 'bkent/ergo-dex-backend:latest'
     volumes:
-      - './appy/rocks:/app-data/deploy/rocks'
+      - 'rocks_data:/app-data/deploy/rocks'
       - './appy/config:/app-data/config'
     command: 'java -Dconfig.file=/app-data/config/pool_resolver.application.conf -jar ./PoolResolver/PoolResolver.jar'
     depends_on:
@@ -30,13 +30,13 @@ services:
 
   ergo_node:
     image: 'ergoplatform/ergo:v4.0.13'
-    # ports:
-    #   - '9030:9030'
+    ports:
+      - '9030:9030'
     #   - '127.0.0.1:9053:9053'
     volumes:
-      - '~/deploy/ergo_node:/home/ergo/.ergo'
-      - '~/deploy/myergo.conf:/etc/myergo.conf'
-      - '~/deploy/logback.xml:/etc/logback.xml'
+      - 'ergo_node_data:/home/ergo/.ergo'
+      - './deploy/myergo.conf:/etc/myergo.conf'
+      - './deploy/logback.xml:/etc/logback.xml'
     environment:
       - _JAVA_OPTIONS=-Dlogback.configurationFile=/etc/logback.xml -DMAX_HEAP=3G
     command: '--mainnet -c /etc/myergo.conf'
@@ -72,3 +72,7 @@ services:
     #   - '6379'
     environment:
       - REDIS_REPLICATION_MODE=master
+
+volumes:
+  rocks_data:
+  ergo_node_data:
